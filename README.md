@@ -34,13 +34,13 @@ L'identité visuelle du projet s'inspire de l'univers des tavernes médiévales 
 - **Vente de cartes** : formulaire de mise en vente avec sélection de catégorie (Pokémon / Yu-Gi-Oh!) et récupération automatique du visuel de la carte via API externe
 - **Page profil** : gestion de ses annonces, upload d'images vers Supabase Storage, édition et suppression de cartes
 - **Page d'accueil** : affichage combiné des cartes issues des API externes et des annonces publiées par les collectionneurs (section dédiée)
-- **Génération de factures PDF** (détail HT / TVA / TTC, numérotation automatique, charte graphique Card-Kingdom)
+- **Recherche et tri** des annonces par catégorie
+- **Génération de factures PDF** (numérotation automatique, charte graphique Card-Kingdom), en remplacement d'un véritable système de paiement — projet à visée pédagogique
 - **Design responsive** : expérience adaptée mobile, tablette et desktop
 
 ### Côté administration
-- Tableau de bord avec statistiques animées
-- Visualisations graphiques (répartition des ventes, utilisateurs, etc.)
-- Gestion des utilisateurs (bannissement, suppression, rôles)
+- Tableau de bord avec statistiques (chiffre d'affaires, répartition des stocks)
+- Gestion des utilisateurs inscrits
 - Gestion des annonces publiées
 
 ---
@@ -48,23 +48,24 @@ L'identité visuelle du projet s'inspire de l'univers des tavernes médiévales 
 ## 🔒 Sécurité
 
 - Variables sensibles isolées dans `.env.local`
-- Vérification des droits admin basée sur la session (pas uniquement côté client)
-- Politiques **RLS (Row Level Security)** sur Supabase, y compris pour les opérations de mise à jour
-- Validation des entrées et protection contre les injections XSS
+- Authentification gérée par Supabase Auth (hachage automatique des mots de passe, sessions sécurisées)
+- Politiques **RLS (Row Level Security)** sur Supabase, restreignant les actions (lecture, création, modification, suppression) selon le rôle de l'utilisateur
+- Validation des champs obligatoires sur les formulaires
 
 ---
 
 ## 🗂️ Structure de la base de données
 
 Le schéma repose sur Supabase PostgreSQL, avec notamment :
-- `auth.users` — gestion des comptes utilisateurs
+- `auth.users` — gestion des comptes utilisateurs (géré par Supabase)
+- `profiles` — profils utilisateurs, liés à `auth.users`
 - `Cards` — table principale des annonces, protégée par RLS, liée à `user_id`
 
-*(Un schéma ERD détaillé est disponible dans les annexes du dossier de certification.)*
+*(Un schéma détaillé est disponible dans les annexes du dossier de certification.)*
 
 ---
 
-## 🚀 Lancer le projet en local
+## 🚀 Installer et lancer le projet en local
 
 ```bash
 # Cloner le dépôt
@@ -97,11 +98,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 ## 🎓 Contexte du projet
 
-Ce projet a été développé en tant que projet fil rouge dans le cadre de la formation **Concepteur Développeur d'Applications (CDPI)** de LPlateforme, en vue de l'obtention du titre professionnel **DWWM**. Il illustre les trois blocs de compétences :
+Ce projet a été développé en tant que projet fil rouge dans le cadre de la formation **Concepteur Développeur d'Applications (CDPI)** de LPlateforme, en vue de l'obtention du titre professionnel **DWWM**. Il illustre les deux blocs de compétences du référentiel :
 
-- **AT1** — Développement front-end
-- **AT2** — Développement back-end, API et base de données
-- **AT3** — Fonctionnalités avancées (administration, génération de documents)
+- **Bloc 1** — Développer la partie front-end d'une application web ou web mobile sécurisée
+- **Bloc 2** — Développer la partie back-end d'une application web ou web mobile sécurisée
 
 ---
 
@@ -114,4 +114,4 @@ Apprenti développeur web — LPlateforme, campus de CANNES
 
 ## 📄 Licence
 
-Projet réalisé à des fins pédagogiques dans le cadre d'un tire professionnelle.
+Projet réalisé à des fins pédagogiques dans le cadre d'un titre professionnel.
