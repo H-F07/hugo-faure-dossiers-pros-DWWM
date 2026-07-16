@@ -103,6 +103,7 @@ Ce projet a été développé en tant que projet fil rouge dans le cadre de la f
 - **Bloc 1** — Développer la partie front-end d'une application web ou web mobile sécurisée
 - **Bloc 2** — Développer la partie back-end d'une application web ou web mobile sécurisée
 
+📁 Le dossier professionnel et le dossier projet associés à cette certification sont disponibles dans le dossier [`docs`](./docs) de ce dépôt.
 ---
 
 ## 👤 Auteur
