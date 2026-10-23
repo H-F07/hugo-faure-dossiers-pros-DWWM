@@ -69,7 +69,286 @@ async function resolveCardImage(name: string, category: string): Promise<string>
 
   return '/cards/card1.jpg'
 }
-
+const FALLBACK_POKEMON_SETS: { id: string; name: string }[] = [
+  { id: 'base1', name: 'Base' },
+  { id: 'base2', name: 'Jungle' },
+  { id: 'basep', name: 'Wizards Black Star Promos' },
+  { id: 'base3', name: 'Fossil' },
+  { id: 'base4', name: 'Base Set 2' },
+  { id: 'base5', name: 'Team Rocket' },
+  { id: 'gym1', name: 'Gym Heroes' },
+  { id: 'gym2', name: 'Gym Challenge' },
+  { id: 'neo1', name: 'Neo Genesis' },
+  { id: 'neo2', name: 'Neo Discovery' },
+  { id: 'si1', name: 'Southern Islands' },
+  { id: 'neo3', name: 'Neo Revelation' },
+  { id: 'neo4', name: 'Neo Destiny' },
+  { id: 'base6', name: 'Legendary Collection' },
+  { id: 'ecard1', name: 'Expedition Base Set' },
+  { id: 'bp', name: 'Best of Game' },
+  { id: 'ecard2', name: 'Aquapolis' },
+  { id: 'ecard3', name: 'Skyridge' },
+  { id: 'ex1', name: 'Ruby & Sapphire' },
+  { id: 'ex2', name: 'Sandstorm' },
+  { id: 'np', name: 'Nintendo Black Star Promos' },
+  { id: 'ex3', name: 'Dragon' },
+  { id: 'ex4', name: 'Team Magma vs Team Aqua' },
+  { id: 'ex5', name: 'Hidden Legends' },
+  { id: 'tk1b', name: 'EX Trainer Kit Latios' },
+  { id: 'tk1a', name: 'EX Trainer Kit Latias' },
+  { id: 'ex6', name: 'FireRed & LeafGreen' },
+  { id: 'pop1', name: 'POP Series 1' },
+  { id: 'ex7', name: 'Team Rocket Returns' },
+  { id: 'ex8', name: 'Deoxys' },
+  { id: 'ex9', name: 'Emerald' },
+  { id: 'pop2', name: 'POP Series 2' },
+  { id: 'ex10', name: 'Unseen Forces' },
+  { id: 'ex11', name: 'Delta Species' },
+  { id: 'ex12', name: 'Legend Maker' },
+  { id: 'tk2a', name: 'EX Trainer Kit 2 Plusle' },
+  { id: 'tk2b', name: 'EX Trainer Kit 2 Minun' },
+  { id: 'pop3', name: 'POP Series 3' },
+  { id: 'ex13', name: 'Holon Phantoms' },
+  { id: 'pop4', name: 'POP Series 4' },
+  { id: 'ex14', name: 'Crystal Guardians' },
+  { id: 'ex15', name: 'Dragon Frontiers' },
+  { id: 'ex16', name: 'Power Keepers' },
+  { id: 'pop5', name: 'POP Series 5' },
+  { id: 'dp1', name: 'Diamond & Pearl' },
+  { id: 'dpp', name: 'DP Black Star Promos' },
+  { id: 'dp2', name: 'Mysterious Treasures' },
+  { id: 'pop6', name: 'POP Series 6' },
+  { id: 'dp3', name: 'Secret Wonders' },
+  { id: 'dp4', name: 'Great Encounters' },
+  { id: 'pop7', name: 'POP Series 7' },
+  { id: 'dp5', name: 'Majestic Dawn' },
+  { id: 'dp6', name: 'Legends Awakened' },
+  { id: 'pop8', name: 'POP Series 8' },
+  { id: 'dp7', name: 'Stormfront' },
+  { id: 'pl1', name: 'Platinum' },
+  { id: 'pop9', name: 'POP Series 9' },
+  { id: 'pl2', name: 'Rising Rivals' },
+  { id: 'pl3', name: 'Supreme Victors' },
+  { id: 'pl4', name: 'Arceus' },
+  { id: 'ru1', name: 'Pokémon Rumble' },
+  { id: 'hgss1', name: 'HeartGold & SoulSilver' },
+  { id: 'hsp', name: 'HGSS Black Star Promos' },
+  { id: 'hgss2', name: 'HS—Unleashed' },
+  { id: 'hgss3', name: 'HS—Undaunted' },
+  { id: 'hgss4', name: 'HS—Triumphant' },
+  { id: 'col1', name: 'Call of Legends' },
+  { id: 'bwp', name: 'BW Black Star Promos' },
+  { id: 'bw1', name: 'Black & White' },
+  { id: 'mcd11', name: "McDonald's Collection 2011" },
+  { id: 'bw2', name: 'Emerging Powers' },
+  { id: 'bw3', name: 'Noble Victories' },
+  { id: 'bw4', name: 'Next Destinies' },
+  { id: 'bw5', name: 'Dark Explorers' },
+  { id: 'mcd12', name: "McDonald's Collection 2012" },
+  { id: 'bw6', name: 'Dragons Exalted' },
+  { id: 'dv1', name: 'Dragon Vault' },
+  { id: 'bw7', name: 'Boundaries Crossed' },
+  { id: 'bw8', name: 'Plasma Storm' },
+  { id: 'bw9', name: 'Plasma Freeze' },
+  { id: 'bw10', name: 'Plasma Blast' },
+  { id: 'xyp', name: 'XY Black Star Promos' },
+  { id: 'bw11', name: 'Legendary Treasures' },
+  { id: 'xy0', name: 'Kalos Starter Set' },
+  { id: 'xy1', name: 'XY' },
+  { id: 'xy2', name: 'Flashfire' },
+  { id: 'mcd14', name: "McDonald's Collection 2014" },
+  { id: 'xy3', name: 'Furious Fists' },
+  { id: 'xy4', name: 'Phantom Forces' },
+  { id: 'xy5', name: 'Primal Clash' },
+  { id: 'dc1', name: 'Double Crisis' },
+  { id: 'xy6', name: 'Roaring Skies' },
+  { id: 'xy7', name: 'Ancient Origins' },
+  { id: 'xy8', name: 'BREAKthrough' },
+  { id: 'mcd15', name: "McDonald's Collection 2015" },
+  { id: 'xy9', name: 'BREAKpoint' },
+  { id: 'g1', name: 'Generations' },
+  { id: 'xy10', name: 'Fates Collide' },
+  { id: 'xy11', name: 'Steam Siege' },
+  { id: 'mcd16', name: "McDonald's Collection 2016" },
+  { id: 'xy12', name: 'Evolutions' },
+  { id: 'smp', name: 'SM Black Star Promos' },
+  { id: 'sm1', name: 'Sun & Moon' },
+  { id: 'sm2', name: 'Guardians Rising' },
+  { id: 'sm3', name: 'Burning Shadows' },
+  { id: 'sm35', name: 'Shining Legends' },
+  { id: 'sm4', name: 'Crimson Invasion' },
+  { id: 'mcd17', name: "McDonald's Collection 2017" },
+  { id: 'sm5', name: 'Ultra Prism' },
+  { id: 'sm6', name: 'Forbidden Light' },
+  { id: 'sm7', name: 'Celestial Storm' },
+  { id: 'sm75', name: 'Dragon Majesty' },
+  { id: 'mcd18', name: "McDonald's Collection 2018" },
+  { id: 'sm8', name: 'Lost Thunder' },
+  { id: 'sm9', name: 'Team Up' },
+  { id: 'det1', name: 'Detective Pikachu' },
+  { id: 'sm10', name: 'Unbroken Bonds' },
+  { id: 'sm11', name: 'Unified Minds' },
+  { id: 'sm115', name: 'Hidden Fates' },
+  { id: 'sma', name: 'Hidden Fates Shiny Vault' },
+  { id: 'mcd19', name: "McDonald's Collection 2019" },
+  { id: 'sm12', name: 'Cosmic Eclipse' },
+  { id: 'swshp', name: 'SWSH Black Star Promos' },
+  { id: 'swsh1', name: 'Sword & Shield' },
+  { id: 'swsh2', name: 'Rebel Clash' },
+  { id: 'swsh3', name: 'Darkness Ablaze' },
+  { id: 'fut20', name: 'Pokémon Futsal Collection' },
+  { id: 'swsh35', name: "Champion's Path" },
+  { id: 'swsh4', name: 'Vivid Voltage' },
+  { id: 'mcd21', name: "McDonald's Collection 2021" },
+  { id: 'swsh45sv', name: 'Shining Fates Shiny Vault' },
+  { id: 'swsh45', name: 'Shining Fates' },
+  { id: 'swsh5', name: 'Battle Styles' },
+  { id: 'swsh6', name: 'Chilling Reign' },
+  { id: 'swsh7', name: 'Evolving Skies' },
+  { id: 'cel25c', name: 'Celebrations: Classic Collection' },
+  { id: 'cel25', name: 'Celebrations' },
+  { id: 'swsh8', name: 'Fusion Strike' },
+  { id: 'swsh9', name: 'Brilliant Stars' },
+  { id: 'swsh9tg', name: 'Brilliant Stars Trainer Gallery' },
+  { id: 'swsh10', name: 'Astral Radiance' },
+  { id: 'swsh10tg', name: 'Astral Radiance Trainer Gallery' },
+  { id: 'pgo', name: 'Pokémon GO' },
+  { id: 'mcd22', name: "McDonald's Collection 2022" },
+  { id: 'swsh11', name: 'Lost Origin' },
+  { id: 'swsh11tg', name: 'Lost Origin Trainer Gallery' },
+  { id: 'swsh12', name: 'Silver Tempest' },
+  { id: 'swsh12tg', name: 'Silver Tempest Trainer Gallery' },
+  { id: 'svp', name: 'Scarlet & Violet Black Star Promos' },
+  { id: 'swsh12pt5', name: 'Crown Zenith' },
+  { id: 'swsh12pt5gg', name: 'Crown Zenith Galarian Gallery' },
+  { id: 'sv1', name: 'Scarlet & Violet' },
+  { id: 'sve', name: 'Scarlet & Violet Energies' },
+  { id: 'sv2', name: 'Paldea Evolved' },
+  { id: 'sv3', name: 'Obsidian Flames' },
+  { id: 'sv3pt5', name: '151' },
+  { id: 'sv4', name: 'Paradox Rift' },
+  { id: 'sv4pt5', name: 'Paldean Fates' },
+  { id: 'sv5', name: 'Temporal Forces' },
+  { id: 'sv6', name: 'Twilight Masquerade' },
+  { id: 'sv6pt5', name: 'Shrouded Fable' },
+  { id: 'sv7', name: 'Stellar Crown' },
+  { id: 'sv8', name: 'Surging Sparks' },
+  { id: 'sv8pt5', name: 'Prismatic Evolutions' },
+  { id: 'sv9', name: 'Journey Together' },
+  { id: 'sv10', name: 'Destined Rivals' },
+  { id: 'zsv10pt5', name: 'Black Bolt' },
+  { id: 'rsv10pt5', name: 'White Flare' },
+  { id: 'me1', name: 'Mega Evolution' },
+  { id: 'me2', name: 'Phantasmal Flames' },
+  { id: 'me2pt5', name: 'Ascended Heroes' },
+  { id: 'me3', name: 'Perfect Order' },
+  { id: 'me4', name: 'Chaos Rising' },
+  { id: 'me5', name: 'Pitch Black' },
+]
+const FALLBACK_BASE_SET_NUMBERS: { code: string; label: string }[] = [
+  { code: '1/102', label: '1/102 — Alakazam' },
+  { code: '2/102', label: '2/102 — Blastoise' },
+  { code: '3/102', label: '3/102 — Chansey' },
+  { code: '4/102', label: '4/102 — Charizard' },
+  { code: '5/102', label: '5/102 — Clefairy' },
+  { code: '6/102', label: '6/102 — Gyarados' },
+  { code: '7/102', label: '7/102 — Hitmonchan' },
+  { code: '8/102', label: '8/102 — Machamp' },
+  { code: '9/102', label: '9/102 — Magneton' },
+  { code: '10/102', label: '10/102 — Mewtwo' },
+  { code: '11/102', label: '11/102 — Nidoking' },
+  { code: '12/102', label: '12/102 — Ninetales' },
+  { code: '13/102', label: '13/102 — Poliwrath' },
+  { code: '14/102', label: '14/102 — Raichu' },
+  { code: '15/102', label: '15/102 — Venusaur' },
+  { code: '16/102', label: '16/102 — Zapdos' },
+  { code: '17/102', label: '17/102 — Beedrill' },
+  { code: '18/102', label: '18/102 — Dragonair' },
+  { code: '19/102', label: '19/102 — Dugtrio' },
+  { code: '20/102', label: '20/102 — Electabuzz' },
+  { code: '21/102', label: '21/102 — Electrode' },
+  { code: '22/102', label: '22/102 — Pidgeotto' },
+  { code: '23/102', label: '23/102 — Arcanine' },
+  { code: '24/102', label: '24/102 — Charmeleon' },
+  { code: '25/102', label: '25/102 — Dewgong' },
+  { code: '26/102', label: '26/102 — Dratini' },
+  { code: '27/102', label: "27/102 — Farfetch'd" },
+  { code: '28/102', label: '28/102 — Growlithe' },
+  { code: '29/102', label: '29/102 — Haunter' },
+  { code: '30/102', label: '30/102 — Ivysaur' },
+  { code: '31/102', label: '31/102 — Jynx' },
+  { code: '32/102', label: '32/102 — Kadabra' },
+  { code: '33/102', label: '33/102 — Kakuna' },
+  { code: '34/102', label: '34/102 — Kingler' },
+  { code: '35/102', label: '35/102 — Machoke' },
+  { code: '36/102', label: '36/102 — Magikarp' },
+  { code: '37/102', label: '37/102 — Magmar' },
+  { code: '38/102', label: '38/102 — Nidorina' },
+  { code: '39/102', label: '39/102 — Nidorino' },
+  { code: '40/102', label: '40/102 — Poliwhirl' },
+  { code: '41/102', label: '41/102 — Porygon' },
+  { code: '42/102', label: '42/102 — Raticate' },
+  { code: '43/102', label: '43/102 — Seel' },
+  { code: '44/102', label: '44/102 — Wartortle' },
+  { code: '45/102', label: '45/102 — Abra' },
+  { code: '46/102', label: '46/102 — Bulbasaur' },
+  { code: '47/102', label: '47/102 — Caterpie' },
+  { code: '48/102', label: '48/102 — Charmander' },
+  { code: '49/102', label: '49/102 — Diglett' },
+  { code: '50/102', label: '50/102 — Doduo' },
+  { code: '51/102', label: '51/102 — Drowzee' },
+  { code: '52/102', label: '52/102 — Gastly' },
+  { code: '53/102', label: '53/102 — Koffing' },
+  { code: '54/102', label: '54/102 — Machop' },
+  { code: '55/102', label: '55/102 — Magnemite' },
+  { code: '56/102', label: '56/102 — Metapod' },
+  { code: '57/102', label: '57/102 — Onix' },
+  { code: '58/102', label: '58/102 — Pidgey' },
+  { code: '59/102', label: '59/102 — Pikachu' },
+  { code: '60/102', label: '60/102 — Poliwag' },
+  { code: '61/102', label: '61/102 — Ponyta' },
+  { code: '62/102', label: '62/102 — Rattata' },
+  { code: '63/102', label: '63/102 — Sandshrew' },
+  { code: '64/102', label: '64/102 — Squirtle' },
+  { code: '65/102', label: '65/102 — Starmie' },
+  { code: '66/102', label: '66/102 — Staryu' },
+  { code: '67/102', label: '67/102 — Tangela' },
+  { code: '68/102', label: '68/102 — Voltorb' },
+  { code: '69/102', label: '69/102 — Vulpix' },
+  { code: '70/102', label: '70/102 — Weedle' },
+  { code: '71/102', label: '71/102 — Clefairy Doll' },
+  { code: '72/102', label: '72/102 — Computer Search' },
+  { code: '73/102', label: '73/102 — Devolution Spray' },
+  { code: '74/102', label: '74/102 — Impostor Professor Oak' },
+  { code: '75/102', label: '75/102 — Item Finder' },
+  { code: '76/102', label: '76/102 — Lass' },
+  { code: '77/102', label: '77/102 — Pokémon Breeder' },
+  { code: '78/102', label: '78/102 — Pokémon Trader' },
+  { code: '79/102', label: '79/102 — Scoop Up' },
+  { code: '80/102', label: '80/102 — Super Energy Removal' },
+  { code: '81/102', label: '81/102 — Defender' },
+  { code: '82/102', label: '82/102 — Energy Retrieval' },
+  { code: '83/102', label: '83/102 — Full Heal' },
+  { code: '84/102', label: '84/102 — Maintenance' },
+  { code: '85/102', label: '85/102 — PlusPower' },
+  { code: '86/102', label: '86/102 — Pokémon Center' },
+  { code: '87/102', label: '87/102 — Pokédex' },
+  { code: '88/102', label: '88/102 — Professor Oak' },
+  { code: '89/102', label: '89/102 — Revive' },
+  { code: '90/102', label: '90/102 — Super Potion' },
+  { code: '91/102', label: '91/102 — Bill' },
+  { code: '92/102', label: '92/102 — Energy Removal' },
+  { code: '93/102', label: '93/102 — Gust of Wind' },
+  { code: '94/102', label: '94/102 — Potion' },
+  { code: '95/102', label: '95/102 — Switch' },
+  { code: '96/102', label: '96/102 — Double Colorless Energy' },
+  { code: '97/102', label: '97/102 — Fighting Energy' },
+  { code: '98/102', label: '98/102 — Fire Energy' },
+  { code: '99/102', label: '99/102 — Grass Energy' },
+  { code: '100/102', label: '100/102 — Lightning Energy' },
+  { code: '101/102', label: '101/102 — Psychic Energy' },
+  { code: '102/102', label: '102/102 — Water Energy' },
+]
 export default function CardoriaPage() {
   const [activeMenu, setActiveMenu] = useState('profile')
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -104,7 +383,66 @@ export default function CardoriaPage() {
   const [newCardDescription, setNewCardDescription] = useState('')
   const [newCardImage, setNewCardImage] = useState<string | null>(null)
   const [newCardCategory, setNewCardCategory] = useState('Pokémon')
+  const [pokemonSets, setPokemonSets] = useState<{ id: string; name: string }[]>([])
+const [yugiohSets, setYugiohSets] = useState<{ set_name: string; set_code: string }[]>([])
+const [setCardNumbers, setSetCardNumbers] = useState<{ code: string; label: string }[]>([])
+const [newCardSetId, setNewCardSetId] = useState('')
+// ── Chargement de la liste des sets selon la catégorie ──────────────────────
+useEffect(() => {
+  const fetchSets = async () => {
+    if (newCardCategory === 'Pokémon') {
+      try {
+        const res = await fetch('https://api.pokemontcg.io/v2/sets?orderBy=releaseDate')
+        const data = await res.json()
+        setPokemonSets(data.data.map((s: any) => ({ id: s.id, name: s.name })))
+      } catch { setPokemonSets(FALLBACK_POKEMON_SETS) }
+    } else {
+      try {
+        const res = await fetch('https://db.ygoprodeck.com/api/v7/cardsets.php')
+        const data = await res.json()
+        setYugiohSets(data.map((s: any) => ({ set_name: s.set_name, set_code: s.set_code })))
+      } catch { setYugiohSets([]) }
+    }
+    setNewCardSetId('')
+    setSetCardNumbers([])
+    setNewCardEdition('')
+    setNewCardSet('')
+  }
+  fetchSets()
+}, [newCardCategory])
 
+// ── Chargement des numéros de carte du set sélectionné ──────────────────────
+useEffect(() => {
+  const fetchNumbers = async () => {
+    if (!newCardSetId) { setSetCardNumbers([]); return }
+
+    if (newCardCategory === 'Pokémon') {
+      try {
+        const res = await fetch(`https://api.pokemontcg.io/v2/cards?q=set.id:${newCardSetId}&pageSize=250`)
+        const data = await res.json()
+        setSetCardNumbers(data.data.map((c: any) => ({
+          code: `${c.number}/${c.set.printedTotal}`,
+          label: `${c.number}/${c.set.printedTotal} — ${c.name}`,
+        })))
+      } catch { setSetCardNumbers(newCardSetId === 'base1' ? FALLBACK_BASE_SET_NUMBERS : []) }
+    } else {
+      try {
+        const res = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(newCardSetId)}`)
+        const data = await res.json()
+        const numbers: { code: string; label: string }[] = []
+        data.data.forEach((c: any) => {
+          c.card_sets?.forEach((cs: any) => {
+            if (cs.set_name === newCardSetId) {
+              numbers.push({ code: cs.set_code, label: `${cs.set_code} — ${c.name}` })
+            }
+          })
+        })
+        setSetCardNumbers(numbers)
+      } catch { setSetCardNumbers([]) }
+    }
+  }
+  fetchNumbers()
+}, [newCardSetId, newCardCategory])
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [editCard, setEditCard] = useState<{ id: number; name: string; edition: string; set: string; price: string; image: string; category?: string } | null>(null)
   const [editCardName, setEditCardName] = useState('')
@@ -114,7 +452,66 @@ export default function CardoriaPage() {
   const [editCardCondition, setEditCardCondition] = useState('Mint')
   const [editCardDescription, setEditCardDescription] = useState('')
   const [editCardImage, setEditCardImage] = useState<string | null>(null)
+  const [editCardCategory, setEditCardCategory] = useState('Pokémon')
+  const [editPokemonSets, setEditPokemonSets] = useState<{ id: string; name: string }[]>([])
+  const [editYugiohSets, setEditYugiohSets] = useState<{ set_name: string; set_code: string }[]>([])
+  const [editSetCardNumbers, setEditSetCardNumbers] = useState<{ code: string; label: string }[]>([])
+  const [editCardSetId, setEditCardSetId] = useState('')
+// ── Chargement des sets pour le modal d'édition ──────────────────────────────
+useEffect(() => {
+  const fetchEditSets = async () => {
+    if (editCardCategory === 'Pokémon') {
+      try {
+        const res = await fetch('https://api.pokemontcg.io/v2/sets?orderBy=releaseDate')
+        const data = await res.json()
+        const sets = data.data.map((s: any) => ({ id: s.id, name: s.name }))
+        setEditPokemonSets(sets)
+        const found = sets.find((s: any) => s.name === editCardSet)
+        setEditCardSetId(found?.id ?? '')
+      } catch { setEditPokemonSets([]) }
+    } else {
+      try {
+        const res = await fetch('https://db.ygoprodeck.com/api/v7/cardsets.php')
+        const data = await res.json()
+        setEditYugiohSets(data.map((s: any) => ({ set_name: s.set_name, set_code: s.set_code })))
+        setEditCardSetId(editCardSet || '')
+      } catch { setEditYugiohSets([]) }
+    }
+  }
+  if (isEditOpen) fetchEditSets()
+}, [editCardCategory, isEditOpen])
 
+// ── Chargement des numéros du set choisi (édition) ────────────────────────────
+useEffect(() => {
+  const fetchEditNumbers = async () => {
+    if (!editCardSetId) { setEditSetCardNumbers([]); return }
+    if (editCardCategory === 'Pokémon') {
+      try {
+        const res = await fetch(`https://api.pokemontcg.io/v2/cards?q=set.id:${editCardSetId}&pageSize=250`)
+        const data = await res.json()
+        setEditSetCardNumbers(data.data.map((c: any) => ({
+          code: `${c.number}/${c.set.printedTotal}`,
+          label: `${c.number}/${c.set.printedTotal} — ${c.name}`,
+        })))
+      } catch { setEditSetCardNumbers([]) }
+    } else {
+      try {
+        const res = await fetch(`https://db.ygoprodeck.com/api/v7/cardinfo.php?cardset=${encodeURIComponent(editCardSetId)}`)
+        const data = await res.json()
+        const numbers: { code: string; label: string }[] = []
+        data.data.forEach((c: any) => {
+          c.card_sets?.forEach((cs: any) => {
+            if (cs.set_name === editCardSetId) {
+              numbers.push({ code: cs.set_code, label: `${cs.set_code} — ${c.name}` })
+            }
+          })
+        })
+        setEditSetCardNumbers(numbers)
+      } catch { setEditSetCardNumbers([]) }
+    }
+  }
+  fetchEditNumbers()
+}, [editCardSetId, editCardCategory])
   const [cartItems, setCartItems] = useState<{ id: number; name: string; price: number; qty: number; image: string }[]>([])
   const [cards, setCards] = useState<{ id: number; name: string; edition: string; set: string; price: string; image: string; category?: string }[]>([])
 
@@ -157,10 +554,12 @@ export default function CardoriaPage() {
 
   // ── Chargement cartes Supabase + résolution images manquantes ───────────────
   useEffect(() => {
-    const fetchCards = async () => {
-      const { data, error } = await supabase.from('Cards').select('*')
-      if (error) { console.error('Erreur chargement cartes :', error.message); return }
+   const fetchCards = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
 
+      const { data, error } = await supabase.from('Cards').select('*').eq('user_id', session.user.id).order('created_at', { ascending: false })
+      if (error) { console.error('Erreur chargement cartes :', error.message); return }
       const resolved = await Promise.all(
         data.map(async (card: any) => {
           let imageUrl = card.img
@@ -191,42 +590,6 @@ export default function CardoriaPage() {
       setCards(prev => [...resolved, ...prev.filter(c => c.id < 0)])
     }
     fetchCards()
-  }, [])
-
-  // ── Chargement cartes depuis les APIs externes (Pokémon TCG + Yu-Gi-Oh) ────
-  useEffect(() => {
-    const fetchApiCards = async () => {
-      try {
-        const pokeRes  = await fetch('https://api.pokemontcg.io/v2/cards?pageSize=4')
-        const pokeData = await pokeRes.json()
-        const pokeCards = pokeData.data.map((c: any, i: number) => ({
-          id:       -1000 - i,
-          name:     c.name,
-          edition:  '',
-          set:      c.set?.name ?? '',
-          price:    `${(c.cardmarket?.prices?.averageSellPrice ?? 0).toFixed(2).replace('.', ',')} €`,
-          image:    c.images.small,
-          category: 'Pokémon',
-        }))
-
-        const yugiRes  = await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=4&offset=0')
-        const yugiData = await yugiRes.json()
-        const yugiCards = yugiData.data.map((c: any, i: number) => ({
-          id:       -2000 - i,
-          name:     c.name,
-          edition:  '',
-          set:      '',
-          price:    `${(parseFloat(c.card_prices?.[0]?.cardmarket_price) || 0).toFixed(2).replace('.', ',')} €`,
-          image:    c.card_images[0].image_url_small,
-          category: 'YU-GI-OH!',
-        }))
-
-        setCards(prev => [...prev, ...pokeCards, ...yugiCards])
-      } catch (err) {
-        console.error('Erreur API externes :', err)
-      }
-    }
-    fetchApiCards()
   }, [])
 
   // ── Publication d'une carte ─────────────────────────────────────────────────
@@ -260,12 +623,12 @@ if (dangerousChars.test(newCardName) || dangerousChars.test(newCardDescription))
       }
       const fileName = `card_${Date.now()}.jpg`
       const { error: uploadError } = await supabase.storage
-        .from('cards-images')
+        .from('card-images')
         .upload(fileName, byteArray, { contentType: 'image/jpeg' })
 
       if (uploadError) { alert("Erreur upload image : " + uploadError.message); return }
 
-      const { data: urlData } = supabase.storage.from('cards-images').getPublicUrl(fileName)
+      const { data: urlData } = supabase.storage.from('card-images').getPublicUrl(fileName)
       imageUrl = urlData.publicUrl
     } else {
       // Pas d'image uploadée → résolution automatique via API
@@ -315,14 +678,15 @@ if (dangerousChars.test(newCardName) || dangerousChars.test(newCardDescription))
   }
 
   const openEditModal = (card: { id: number; name: string; edition: string; set: string; price: string; image: string; category?: string }) => {
-    setEditCard(card)
-    setEditCardName(card.name)
-    setEditCardEdition(card.edition)
-    setEditCardSet(card.set)
-    setEditCardPrice(card.price.replace(' €', '').replace(',', '.'))
-    setEditCardImage(card.image)
-    setIsEditOpen(true)
-  }
+  setEditCard(card)
+  setEditCardName(card.name)
+  setEditCardEdition(card.edition)
+  setEditCardSet(card.set)
+  setEditCardCategory(card.category === 'YU-GI-OH!' ? 'YU-GI-OH!' : 'Pokémon')
+  setEditCardPrice(card.price.replace(' €', '').replace(',', '.'))
+  setEditCardImage(card.image)
+  setIsEditOpen(true)
+}
 
   const handleUpdateCard = async () => {
     let imageUrl = editCardImage || '/cards/card1.jpg'
@@ -336,10 +700,10 @@ if (dangerousChars.test(newCardName) || dangerousChars.test(newCardDescription))
       }
       const fileName = `card_${Date.now()}.jpg`
       const { error: uploadError } = await supabase.storage
-        .from('cards-images')
+        .from('card-images')
         .upload(fileName, byteArray, { contentType: 'image/jpeg' })
       if (uploadError) { alert("Erreur upload : " + uploadError.message); return }
-      const { data: urlData } = supabase.storage.from('cards-images').getPublicUrl(fileName)
+      const { data: urlData } = supabase.storage.from('card-images').getPublicUrl(fileName)
       imageUrl = urlData.publicUrl
     }
 
@@ -514,15 +878,51 @@ if (dangerousChars.test(newCardName) || dangerousChars.test(newCardDescription))
                   <input type="text" value={editCardName} onChange={(e) => setEditCardName(e.target.value)} className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase">Numéro / Édition</label>
-                  <input type="text" value={editCardEdition} onChange={(e) => setEditCardEdition(e.target.value)} className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none" />
+                  <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase">Catégorie</label>
+                  <select value={editCardCategory} onChange={(e) => setEditCardCategory(e.target.value)} className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none cursor-pointer">
+                    <option value="Pokémon">Pokémon</option>
+                    <option value="YU-GI-OH!">Yu-Gi-Oh!</option>
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase">Extension / Set</label>
-                  <input type="text" value={editCardSet} onChange={(e) => setEditCardSet(e.target.value)} className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none" />
+                  <select
+                    value={editCardSetId}
+                    onChange={(e) => {
+                      const selected = e.target.value
+                      setEditCardSetId(selected)
+                      if (editCardCategory === 'Pokémon') {
+                        const found = editPokemonSets.find(s => s.id === selected)
+                        setEditCardSet(found?.name ?? '')
+                      } else {
+                        setEditCardSet(selected)
+                      }
+                      setEditCardEdition('')
+                    }}
+                    className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none cursor-pointer"
+                  >
+                    <option value="">Sélectionner un set</option>
+                    {editCardCategory === 'Pokémon'
+                      ? editPokemonSets.map(s => <option key={s.id} value={s.id}>{s.name}</option>)
+                      : editYugiohSets.map(s => <option key={s.set_code} value={s.set_name}>{s.set_name}</option>)}
+                  </select>
                 </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase">Numéro / Édition</label>
+                  <select
+                    value={editCardEdition}
+                    onChange={(e) => setEditCardEdition(e.target.value)}
+                    disabled={!editCardSetId}
+                    className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none cursor-pointer disabled:opacity-50"
+                  >
+                    <option value="">{editCardSetId ? 'Sélectionner un numéro' : "Choisissez d'abord un set"}</option>
+                    {editSetCardNumbers.map(n => <option key={n.code} value={n.code}>{n.label}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase">Prix (€)</label>
                   <input type="number" step="0.01" value={editCardPrice} onChange={(e) => setEditCardPrice(e.target.value)} className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none" />
@@ -581,14 +981,43 @@ if (dangerousChars.test(newCardName) || dangerousChars.test(newCardDescription))
                   </select>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase font-serif">Numéro / Édition</label>
-                  <input type="text" required value={newCardEdition} onChange={(e) => setNewCardEdition(e.target.value)} placeholder="Ex: Édition 1 - 4/102" className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none focus:border-[#d4a85c]" />
-                </div>
+             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase font-serif">Extension / Set</label>
-                  <input type="text" required value={newCardSet} onChange={(e) => setNewCardSet(e.target.value)} placeholder="Ex: Set de Base" className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none focus:border-[#d4a85c]" />
+                  <select
+                    required
+                    value={newCardSetId}
+                    onChange={(e) => {
+                      const selected = e.target.value
+                      setNewCardSetId(selected)
+                      if (newCardCategory === 'Pokémon') {
+                        const found = pokemonSets.find(s => s.id === selected)
+                        setNewCardSet(found?.name ?? '')
+                      } else {
+                        setNewCardSet(selected)
+                      }
+                      setNewCardEdition('')
+                    }}
+                    className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none focus:border-[#d4a85c] cursor-pointer"
+                  >
+                    <option value="">Sélectionner un set</option>
+                    {newCardCategory === 'Pokémon'
+                      ? pokemonSets.map(s => <option key={s.id} value={s.id}>{s.name}</option>)
+                      : yugiohSets.map(s => <option key={s.set_code} value={s.set_name}>{s.set_name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-[#3d2914] tracking-wide mb-1 uppercase font-serif">Numéro / Édition</label>
+                  <select
+                    required
+                    value={newCardEdition}
+                    onChange={(e) => setNewCardEdition(e.target.value)}
+                    disabled={!newCardSetId}
+                    className="w-full px-3 py-2 rounded bg-[#f5e6c8] border border-[#8b6914] text-sm text-[#3d2914] focus:outline-none focus:border-[#d4a85c] cursor-pointer disabled:opacity-50"
+                  >
+                    <option value="">{newCardSetId ? 'Sélectionner un numéro' : "Choisissez d'abord un set"}</option>
+                    {setCardNumbers.map(n => <option key={n.code} value={n.code}>{n.label}</option>)}
+                  </select>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -762,19 +1191,12 @@ if (dangerousChars.test(newCardName) || dangerousChars.test(newCardDescription))
                       </div>
                     </div>
                   </div>
-
                   <div className="flex-1 min-w-0">
-                    {activeMenu === 'profile' && (
-                      <div className="space-y-6">
-                        <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                          <StatCard icon="📋" value={cards.length.toString()} label="CARTES EN VENTE" />
-                          <StatCard icon="🏆" value="47" label="VENTES RÉALISÉES" />
-                          <StatCard icon="✓" value="98%" label="AVIS POSITIFS" />
-                          <StatCard icon="★" value="4,8" suffix="/5" label="NOTE MOYENNE" />
-                        </div>
+                  {activeMenu === 'profile' && (
+                  <div className="space-y-6">
                         <div>
                           <div className="flex flex-col min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between gap-3 mb-3 sm:mb-4">
-                            <h3 className="text-base sm:text-lg font-bold text-[#3d2914] tracking-wide">MES DERNIÈRES ANNONCES</h3>
+                            <h3 className="text-base sm:text-lg font-bold text-[#3d2914] tracking-wide">MES ANNONCES</h3>
                             <button onClick={() => setActiveMenu('listings')} className="gold-button px-3 sm:px-4 py-1.5 rounded text-xs font-semibold tracking-wide cursor-pointer">VOIR TOUT</button>
                           </div>
                           <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">

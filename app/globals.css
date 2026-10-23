@@ -265,3 +265,9 @@
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #f0d090, #d4a85c);
 }
+/* Version ultra-visible en ROSE FLUO pour ton test et l'examen */
+*:focus-visible {
+  outline: 4px solid #ff007f !important; /* Rose fluo (Magenta) */
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 6px rgba(255, 0, 127, 0.5) !important;
+}

@@ -37,15 +37,21 @@ export default function AdminDashboard() {
   const [userList, setUserList] = useState(users)
   const [tooltip, setTooltip] = useState<{ index: number; value: number } | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(
-  () => localStorage.getItem('isAdminLoggedIn') === 'true'
-)
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<boolean>(false)
 
+  useEffect(() => {
+    setIsAdminLoggedIn(localStorage.getItem('isAdminLoggedIn') === 'true')
+  }, [])
+
+// L'animation d'entrée ne doit pas dépendre du login : elle se joue à chaque
+// arrivée sur le dashboard, sinon les stats/graphiques restent invisibles
+// (opacity 0 / hauteur 0 / dasharray 0) si isAdminLoggedIn n'est pas encore true.
 useEffect(() => {
-  if (isAdminLoggedIn) {
-    setTimeout(() => setAnimatedStats(true), 100)
-  }
-}, [isAdminLoggedIn])
+  setAnimatedStats(false)
+  const timer = setTimeout(() => setAnimatedStats(true), 100)
+  return () => clearTimeout(timer)
+}, [activeMenu])
+
  const handleLogout = async () => {
   localStorage.removeItem('isAdminLoggedIn')
   await supabase.auth.signOut()
@@ -182,11 +188,18 @@ useEffect(() => {
 
               {/* Graphiques */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                <div className="parchment-inner p-4 md:p-6 border-2 border-[#8b6914] shadow-xl rounded-lg">
+                <div
+                  className="parchment-inner p-4 md:p-6 border-2 border-[#8b6914] shadow-xl rounded-lg"
+                  style={{
+                    opacity: animatedStats ? 1 : 0,
+                    transform: animatedStats ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'all 0.5s ease 0.3s'
+                  }}
+                >
                   <h3 className="font-bold text-[#3d2914] mb-4 flex items-center gap-2 font-serif text-base md:text-lg">
                     <TrendingUp className="w-5 h-5 text-[#8b6914]" /> Chiffre d'affaires annuel (En k€)
                   </h3>
-                  <div className="relative h-40 md:h-48 w-full bg-[#3d2914]/5 rounded-lg border border-[#8b6914]/20 p-3 pb-6">
+                  <div className="relative h-40 md:h-48 w-full max-w-md mx-auto pb-6">
                     <div className="flex items-end h-full gap-1">
                       {monthlyData.map((h, i) => (
                         <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group relative">
@@ -201,7 +214,7 @@ useEffect(() => {
                               height: animatedStats ? `${h}%` : '4px',
                               minHeight: '4px',
                               background: 'linear-gradient(to top, #8b6914, #d4a85c)',
-                              transition: `height 0.8s ease ${i * 0.06}s`,
+                              transition: `height 0.8s ease ${0.5 + i * 0.06}s`,
                             }}
                             onMouseEnter={() => setTooltip({ index: i, value: h })}
                             onMouseLeave={() => setTooltip(null)}
@@ -209,7 +222,7 @@ useEffect(() => {
                         </div>
                       ))}
                     </div>
-                    <div className="absolute bottom-1 left-3 right-3 flex gap-1">
+                    <div className="absolute bottom-1 left-0 right-0 flex gap-1">
                       {months.map((m, i) => (
                         <div key={i} className="flex-1 text-center">
                           <span className="text-[6px] md:text-[7px] text-[#8b7355] font-bold">{m}</span>
@@ -219,7 +232,14 @@ useEffect(() => {
                   </div>
                 </div>
 
-                <div className="parchment-inner p-4 md:p-6 border-2 border-[#8b6914] shadow-xl rounded-lg">
+                <div
+                  className="parchment-inner p-4 md:p-6 border-2 border-[#8b6914] shadow-xl rounded-lg"
+                  style={{
+                    opacity: animatedStats ? 1 : 0,
+                    transform: animatedStats ? 'translateY(0)' : 'translateY(20px)',
+                    transition: 'all 0.5s ease 0.4s'
+                  }}
+                >
                   <h3 className="font-bold text-[#3d2914] mb-4 flex items-center gap-2 font-serif text-base md:text-lg">
                     <PieChart className="w-5 h-5 text-[#8b6914]" /> Répartition des Stocks
                   </h3>
@@ -229,15 +249,15 @@ useEffect(() => {
                         <circle cx="18" cy="18" r="15.9" fill="none" stroke="#3d2914" strokeWidth="3" opacity="0.1" />
                         <circle cx="18" cy="18" r="15.9" fill="none" stroke="#d4a85c" strokeWidth="3"
                           strokeDasharray={animatedStats ? "57 43" : "0 100"}
-                          style={{ transition: 'stroke-dasharray 1s ease 0.5s' }} />
+                          style={{ transition: 'stroke-dasharray 1s ease 0.7s' }} />
                         <circle cx="18" cy="18" r="15.9" fill="none" stroke="#8b6914" strokeWidth="3"
                           strokeDasharray={animatedStats ? "28 72" : "0 100"}
                           strokeDashoffset="-57"
-                          style={{ transition: 'stroke-dasharray 1s ease 0.7s' }} />
+                          style={{ transition: 'stroke-dasharray 1s ease 0.9s' }} />
                         <circle cx="18" cy="18" r="15.9" fill="none" stroke="#2d6a4f" strokeWidth="3"
                           strokeDasharray={animatedStats ? "15 85" : "0 100"}
                           strokeDashoffset="-85"
-                          style={{ transition: 'stroke-dasharray 1s ease 0.9s' }} />
+                          style={{ transition: 'stroke-dasharray 1s ease 1.1s' }} />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
                         <span className="text-xs font-black text-[#3d2914]">156</span>
@@ -256,49 +276,16 @@ useEffect(() => {
                           <span className="font-black text-[#3d2914] ml-auto">{item.pct}</span>
                         </div>
                       ))}
-                    </div>
+                   </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Dernières commandes résumé */}
-              <div className="mt-6 parchment-inner p-4 md:p-6 border-2 border-[#8b6914] shadow-xl rounded-lg">
-                <h3 className="font-bold text-[#3d2914] mb-4 flex items-center gap-2 font-serif text-base md:text-lg">
-                  <Package className="w-5 h-5 text-[#8b6914]" /> Dernières Commandes
-                </h3>
-                <div className="overflow-x-auto -mx-4 md:mx-0" style={{ fontFamily: 'Arial, sans-serif' }}>
-                  <div className="min-w-[500px] px-4 md:px-0 md:min-w-0">
-                    <table className="w-full text-xs">
-                      <thead>
-                        <tr className="border-b border-[#8b6914]/30">
-                          {['ID', 'Acheteur', 'Carte', 'Date', 'Statut', 'Total'].map((h) => (
-                            <th key={h} className="text-left py-2 px-3 text-[#5c4a32] font-bold uppercase text-[10px] tracking-wide">{h}</th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orders.slice(0, 3).map((order, i) => (
-                          <tr key={i} className="border-b border-[#8b6914]/10 hover:bg-[#3d2914]/5 transition-colors">
-                            <td className="py-2.5 px-3 font-mono text-[#3d2914] font-bold">{order.id}</td>
-                            <td className="py-2.5 px-3 text-[#5c4a32]">{order.user}</td>
-                            <td className="py-2.5 px-3 text-[#5c4a32] truncate max-w-[100px]">{order.card}</td>
-                            <td className="py-2.5 px-3 text-[#8b7355]">{order.date}</td>
-                            <td className="py-2.5 px-3">
-                              <span className={`px-2 py-0.5 rounded-full border text-[10px] font-bold ${statusColor(order.status)}`}>{order.statusLabel}</span>
-                            </td>
-                            <td className="py-2.5 px-3 font-black text-[#3d2914]">{order.total}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                <button onClick={() => setActiveMenu('orders')} className="mt-3 text-[10px] font-bold text-[#8b6914] hover:text-[#3d2914] transition-colors">
-                  VOIR TOUTES LES COMMANDES →
-                </button>
               </div>
             </div>
           )}
+
+          {/* COMMANDES */}
+              
+
 
           {/* COMMANDES */}
           {activeMenu === 'orders' && (

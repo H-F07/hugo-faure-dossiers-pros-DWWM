@@ -107,26 +107,37 @@ const [userRole, setUserRole] = useState<string | null>(null)
   useEffect(() => {
     async function fetchCards() {
       try {
-        const pokeRes  = await fetch('https://api.pokemontcg.io/v2/cards?pageSize=4')
-        const pokeData = await pokeRes.json()
-        setPokemonCards(pokeData.data.map((c: any) => ({
-          name:  c.name,
-          image: c.images.small,
-          price: c.cardmarket?.prices?.averageSellPrice ?? 0,
-          type:  'POKÉMON',
-        })))
+  const pokeRes = await fetch('https://api.pokemontcg.io/v2/cards?pageSize=4')
+  if (!pokeRes.ok) throw new Error('pokeRes not ok')
+  const pokeData = await pokeRes.json()
+  setPokemonCards(pokeData.data.map((c: any) => ({
+    name: c.name,
+    image: c.images.small,
+    price: c.cardmarket?.prices?.averageSellPrice ?? 0,
+    type: 'POKÉMON',
+  })))
+} catch (err) {
+  console.error('Erreur API Pokémon:', err)
+  setPokemonCards([
+    { name: 'Dracaufeu', image: '/cards/card1.jpg', price: 45.00, type: 'POKÉMON' },
+    { name: 'Léviator', image: '/cards/card1.jpg', price: 30.00, type: 'POKÉMON' },
+  ])
+}
 
-        const yugiRes  = await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=4&offset=0')
-        const yugiData = await yugiRes.json()
-        setYugiohCards(yugiData.data.map((c: any) => ({
-          name:  c.name,
-          image: c.card_images[0].image_url_small,
-          price: parseFloat(c.card_prices[0].cardmarket_price) || 0,
-          type:  'YU-GI-OH!',
-        })))
-      } catch (err) {
-        console.error('Erreur API:', err)
-      }
+try {
+  const yugiRes = await fetch('https://db.ygoprodeck.com/api/v7/cardinfo.php?num=4&offset=0')
+  if (!yugiRes.ok) throw new Error('yugiRes not ok')
+  const yugiData = await yugiRes.json()
+  setYugiohCards(yugiData.data.map((c: any) => ({
+    name: c.name,
+    image: c.card_images[0].image_url_small,
+    price: parseFloat(c.card_prices[0].cardmarket_price) || 0,
+    type: 'YU-GI-OH!',
+  })))
+} catch (err) {
+  console.error('Erreur API Yu-Gi-Oh:', err)
+  setYugiohCards([])
+}
     }
     fetchCards()
   }, [])
@@ -721,12 +732,19 @@ const [userRole, setUserRole] = useState<string | null>(null)
                 <button className="green-button px-6 sm:px-8 py-3 rounded-md font-bold text-sm tracking-widest hover:scale-105 transition-transform">
                   EXPLORER LE CATALOGUE
                 </button>
-                <button onClick={() => { if (!isLoggedIn) { setIsModalOpen(true) } else { window.location.href = '/profil?sell=true' } }} className="gold-button px-6 sm:px-8 py-3 rounded-md font-bold text-[#3d2914] text-sm tracking-widest border border-[#8b6914]/50 hover:bg-[#d4a85c]/20 transition-colors">
+                <button tabIndex={0} onClick={() => { if (!isLoggedIn) { setIsModalOpen(true) } else { window.location.href = '/profil?sell=true' } }} className="gold-button ...">
                   VENDRE UNE CARTE
                 </button>
               </div>
             </section>
-
+            <section className="mb-10 sm:mb-12">
+              <div className="grid grid-cols-1 min-[420px]:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                <StatCard icon="📋" value={customCards.length.toString()} label="CARTES EN VENTE" />
+                <StatCard icon="🏆" value="47" label="VENTES RÉALISÉES" />
+                <StatCard icon="✓" value="98%" label="AVIS POSITIFS" />
+                <StatCard icon="★" value="4,8" suffix="/5" label="NOTE MOYENNE" />
+              </div>
+            </section>
             <section className="mb-10 sm:mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <Trophy className="w-6 h-6 text-[#8b6914]" />
@@ -745,6 +763,7 @@ const [userRole, setUserRole] = useState<string | null>(null)
                   </div>
                 ))}
               </div>
+            
             </section>
 
             {/* ── ANNONCES COLLECTIONNEURS (Supabase) ── */}
@@ -856,5 +875,16 @@ function NavButton({
       </div>
       <span className="text-[8px] sm:text-[9px] text-[#8b7355] font-bold mt-1 group-hover:text-[#d4a85c]">{label}</span>
     </button>
+  )
+}
+function StatCard({ icon, value, suffix = '', label }: { icon: string, value: string, suffix?: string, label: string }) {
+  return (
+    <div className="rounded-lg p-3 sm:p-4 text-center border border-[#8b6914]/20 bg-[#3d2914]/5 min-w-0">
+      <div className="text-xl sm:text-2xl mb-1 opacity-70">{icon}</div>
+      <div className="text-xl sm:text-2xl md:text-3xl font-bold text-[#3d2914]">
+        {value}<span className="text-base sm:text-lg text-[#5c4a32]">{suffix}</span>
+      </div>
+      <div className="text-[10px] sm:text-xs text-[#5c4a32] tracking-wide font-medium mt-1 uppercase break-words">{label}</div>
+    </div>
   )
 }
